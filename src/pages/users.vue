@@ -102,6 +102,8 @@
 import { ref, onMounted } from 'vue'
 import api from '@/api/back'
 import { useRouter } from 'vue-router'
+import { computed } from 'vue'
+
 
 const router = useRouter()
 const success = ref('')
@@ -151,13 +153,21 @@ const cancelarCrearUsuario = () => {
   nuevoUsuario.value = { name: '', email: '', password: '', role: 'user' }
 }
 
-const headers = [
-  { title: 'ID', key: 'id' },
-  { title: 'Nombre', key: 'name' },
-  { title: 'Correo', key: 'email' },
-  { title: 'Acciones', key: 'actions', sortable: false },
-  { title: 'Rol', key: 'role' },
-]
+const headers = computed(() => {
+  const baseHeaders = [
+    { title: 'ID', key: 'id' },
+    { title: 'Nombre', key: 'name' },
+    { title: 'Correo', key: 'email' },
+  ]
+
+  if (isAdmin) {
+    baseHeaders.push({ title: 'Rol', key: 'role' })
+  }
+
+  baseHeaders.push({ title: 'Acciones', key: 'actions', sortable: false })
+
+  return baseHeaders
+})
 
 const cargarUsuarios = async () => {
   loading.value = true
